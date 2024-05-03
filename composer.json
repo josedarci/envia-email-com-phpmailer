@@ -1,0 +1,21 @@
+{
+    "name": "joserodriguesjr/envia-email-com-phpmailer",
+    "description": "enviando email com phpmailer",
+    "type": "project",
+    "require": {
+        "phpmailer/phpmailer": "dev-master"
+    },
+    "license": "GNU",
+    "autoload": {
+        "psr-4": {
+            "Joserodriguesjr\\EnviaEmailComPhpmailer\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "José Darci Rodrigues Junior",
+            "email": "juniorinternet@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}

@@ -1,0 +1,49 @@
+<?php
+
+ini_set('display_errors', 1); // Ativa a exibição de erros
+ini_set('display_startup_errors', 1); // Ativa a exibição de erros durante a inicialização
+error_reporting(E_ALL); // Relata todos os tipos de erros
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'vendor/autoload.php';  // Certifique-se de que o caminho até o autoload está correto
+
+// Verifica se o formulário foi submetido
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $nome = isset($_POST['name']) ? $_POST['name'] : "Nome não informado";
+    $email = isset($_POST['email']) ? $_POST['email'] : "email@example.com";
+    $assunto = isset($_POST['subject']) ? $_POST['subject'] : "Sem assunto";
+    $mensagem = isset($_POST['message']) ? $_POST['message'] : "Nenhuma mensagem fornecida";
+
+    $mail = new PHPMailer(true);
+
+    try {
+        // Configuração do Servidor
+        $mail->isSMTP();                                      // Definir o uso de SMTP
+        $mail->Host = 'smtp.exemplo.com';                     // Especificar o servidor SMTP
+        $mail->SMTPAuth = true;                               // Ativar autenticação SMTP
+        $mail->Username = 'usuario@exemplo.com';              // Usuário SMTP
+        $mail->Password = 'senha';                            // Senha SMTP
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;   // Ativar criptografia TLS
+        $mail->Port = 587;                                    // Porta TCP para conectar
+
+        // Remetentes e destinatários
+        $mail->setFrom($email, $nome);
+        $mail->addAddress('para@exemplo.com', 'Joe User');    // Adicionar um destinatário
+
+        // Conteúdo do Email
+        $mail->isHTML(true);                                  // Definir o formato do email para HTML
+        $mail->Subject = $assunto;
+        $mail->Body = $mensagem;
+        $mail->AltBody = strip_tags($mensagem);
+
+        $mail->send();
+        echo 'Mensagem enviada com sucesso';
+    } catch (Exception $e) {
+        echo "Mensagem não pôde ser enviada. Erro do PHPMailer: {$mail->ErrorInfo}";
+    }
+} else {
+    echo "Requisição inválida. Acesso negado.";
+}
+?>
