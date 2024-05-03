@@ -17,6 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $mensagem = isset($_POST['message']) ? $_POST['message'] : "Nenhuma mensagem fornecida";
 
     $mail = new PHPMailer(true);
+    $mail->CharSet = 'UTF-8';
 
     try {
         // Configuração do Servidor
@@ -25,18 +26,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mail->SMTPAuth = true;                               // Ativar autenticação SMTP
         $mail->Username = 'usuario@exemplo.com';              // Usuário SMTP
         $mail->Password = 'senha';                            // Senha SMTP
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;   // Ativar criptografia TLS
-        $mail->Port = 587;                                    // Porta TCP para conectar
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;      // Encriptação SSL/TLS
+        $mail->Port = 465;                                    // Porta do servidor SMTP
+
 
         // Remetentes e destinatários
-        $mail->setFrom($email, $nome);
-        $mail->addAddress('para@exemplo.com', 'Joe User');    // Adicionar um destinatário
+        $mail->setFrom('atendimento@josedarci.com', 'Atendimento'); // remetente email e nome - conta que vai ser configurado para envio pelo servidor de hospedagem
+        $mail->addAddress($email, $nome);                     // Adicionar um destinatário
 
         // Conteúdo do Email
         $mail->isHTML(true);                                  // Definir o formato do email para HTML
         $mail->Subject = $assunto;
         $mail->Body = $mensagem;
         $mail->AltBody = strip_tags($mensagem);
+
+        // Lidar com o arquivo enviado
+        if (isset($_FILES['fileUpload']) && $_FILES['fileUpload']['error'] == 0) {
+            $uploadfile = $_FILES['fileUpload']['tmp_name'];
+            $filename = $_FILES['fileUpload']['name'];
+            // Anexa o arquivo
+            $mail->addAttachment($uploadfile, $filename);
+        }
 
         $mail->send();
         echo 'Mensagem enviada com sucesso';
