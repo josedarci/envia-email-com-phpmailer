@@ -25,14 +25,15 @@ $(document).ready(function () {
             success: function (response) {
                 Swal.fire(
                     'Sucesso!',
-                    'Seu email foi enviado com sucesso.',
+                    response.message,
                     'success'
                 );
             },
-            error: function () {
+            error: function (xhr) {
+                var response = JSON.parse(xhr.responseText);
                 Swal.fire(
                     'Erro!',
-                    'Não foi possível enviar seu email. Tente novamente mais tarde.',
+                    response.message,
                     'error'
                 );
             }
